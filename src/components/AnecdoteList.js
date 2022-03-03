@@ -1,20 +1,32 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { voteForAnecdote } from '../reducers/anecdoteReducer'
+import { showNotification, hideNotification } from '../reducers/notificationReducer'
 
-const Anecdote = ({ anecdote, handleClick }) => (
-  <div key={anecdote.id}>
-    <div>{anecdote.content}</div>
-    <div>
-      has {anecdote.votes}
-      <button onClick={handleClick}>vote</button>
+const Anecdote = ({ anecdote }) => {
+  const dispatch = useDispatch()
+
+  const handleClick = () => {
+    dispatch(voteForAnecdote(anecdote.id))
+    dispatch(showNotification(`Voted for anecdote: ${anecdote.content}`))
+    setTimeout(() => {
+      dispatch(hideNotification())
+    }, 5000)
+  }
+
+  return (
+    <div key={anecdote.id}>
+      <div>{anecdote.content}</div>
+      <div>
+        has {anecdote.votes}
+        <button onClick={handleClick}>vote</button>
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 const AnecdoteList = () => {
-  const dispatch = useDispatch()
-  const anecdotes = useSelector(state => state)
-  const sortedAnecdotes = anecdotes.sort((a, b) => a.votes - b.votes).reverse()
+  const unsortedAnecdotes = useSelector((state => state.anecdotes))
+  const sortedAnecdotes = [...unsortedAnecdotes].sort((a, b) => a.votes - b.votes).reverse()
 
   return (
     <div>
@@ -22,8 +34,6 @@ const AnecdoteList = () => {
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() =>
-            dispatch(voteForAnecdote(anecdote.id))}
         />
       )}
     </div>
