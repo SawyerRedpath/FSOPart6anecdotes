@@ -33,7 +33,6 @@ export const createAnecdote = (anecdote) => {
   }
 }
 
-
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'VOTE':
@@ -51,8 +50,7 @@ const reducer = (state = initialState, action) => {
     default:
       return state
   }
-
-
 }
+
 
 export default reducer
